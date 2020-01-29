@@ -1,9 +1,9 @@
 CC=clang
 
-BUILD_DIR ?= ./build
-SRC_DIRS ?= ./src
-
 TARGET_EXEC ?= ${name}
+
+BUILD_DIR ?= ./build/${TARGET_EXEC}
+SRC_DIRS ?= ./src/${TARGET_EXEC}
 
 SRCS := $(shell find $(SRC_DIRS) -name *.c -or -name *.s)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
