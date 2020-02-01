@@ -13,6 +13,10 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
+# Uncomment to enable debugging
+CPPFLAGS += -g
+## Uncomment to save intermediate files during compilation
+#CPPFLAGS += -save-temps
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
