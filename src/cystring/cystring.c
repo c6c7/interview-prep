@@ -3,8 +3,27 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define INITIAL_BUFFER_SIZE 128
+
+#define TYPE_ARRAY_TO_STR(TYPE, FORMAT_SPECIFIER)                         \
+  char *TYPE##_array_to_str(TYPE *ptr, size_t length) {                   \
+    char *middle;                                                         \
+    if (length == 0) {                                                    \
+      middle = strdup("");                                                \
+    } else {                                                              \
+      middle = compose_str(FORMAT_SPECIFIER, ptr[0]);                     \
+      for (int i = 1; i < length; i++) {                                  \
+        char *next = compose_str("%s " FORMAT_SPECIFIER, middle, ptr[i]); \
+        free(middle);                                                     \
+        middle = next;                                                    \
+      }                                                                   \
+    }                                                                     \
+    char *str = compose_str("[ %s ]", middle);                            \
+    free(middle);                                                         \
+    return str;                                                           \
+  }
 
 char *compose_str(const char *format, ...) {
   va_list args;
@@ -42,3 +61,6 @@ char *compose_str(const char *format, ...) {
 
   return str;
 }
+
+TYPE_ARRAY_TO_STR(int, "%d")
+TYPE_ARRAY_TO_STR(double, "%.3e")
