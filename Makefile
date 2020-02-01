@@ -3,7 +3,7 @@ CC=clang
 TARGET_EXEC ?= ${name}
 
 BUILD_DIR ?= ./build/${TARGET_EXEC}
-SRC_DIRS ?= $(addprefix ./src/,${TARGET_EXEC} cystring multi-stack)
+SRC_DIRS ?= $(addprefix ./src/,${TARGET_EXEC} cystring multi-stack hanoi)
 
 SRCS := $(shell find $(SRC_DIRS) -name *.c -or -name *.s)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
