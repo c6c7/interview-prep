@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cystring.h"
+#include "hanoi.h"
 #include "multi-stack.h"
 
 int SUCCESSES = 0;
@@ -21,14 +22,7 @@ char *double_formatter(void *d_ptr) {
   return compose_str("%.3e", *(double *)d_ptr);
 }
 
-int main(int argc, char *argv[]) {
-  const char A[] = "A";
-  const char B[] = "B";
-  char *composed_AB = compose_str("%s%s", A, B);
-
-  str_match_test("AB", composed_AB);
-  free(composed_AB);
-
+void test_MultiStack() {
   struct MultiStack *ms = malloc(sizeof(struct MultiStack));
   MultiStack_init(ms);
   double some_numbers[5] = {1, 2, 3, 4, 5};
@@ -63,6 +57,46 @@ int main(int argc, char *argv[]) {
   printf("Popped %p\n", MultiStack_pop(ms));
 
   MultiStack_destroy(ms);
+}
+
+void test_array_to_str() {
+  int test_int_array[] = {1, 2, 3};
+  char *test_int_array_str = int_array_to_str(test_int_array, 3);
+  printf("%s\n", test_int_array_str);
+  free(test_int_array_str);
+
+  double test_array[] = {1.0, 2.0, 3.0};
+  char *test_array_str = double_array_to_str(test_array, 3);
+  printf("%s\n", test_array_str);
+  free(test_array_str);
+}
+
+void test_TowerOfHanoi() {
+  struct TowerOfHanoi t;
+  t.tower_A = (int[]){1, 2, 3};
+  t.tower_A_size = 3;
+  t.tower_B = (int[]){4};
+  t.tower_B_size = 1;
+  t.tower_C = (int[]){};
+  t.tower_C_size = 0;
+
+  char *t_str = TowerOfHanoi_to_str(&t);
+  printf("%s", t_str);
+  free(t_str);
+}
+
+int main(int argc, char *argv[]) {
+  const char A[] = "A";
+  const char B[] = "B";
+  char *composed_AB = compose_str("%s%s", A, B);
+
+  str_match_test("AB", composed_AB);
+  free(composed_AB);
+
+  // test_MultiStack();
+  test_array_to_str();
+
+  test_TowerOfHanoi();
 
   printf("%d of %d tests passed.\n", SUCCESSES, SUCCESSES + FAILURES);
 
