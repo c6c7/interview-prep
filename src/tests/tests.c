@@ -72,27 +72,31 @@ void test_array_to_str() {
 }
 
 void test_TowerOfHanoi() {
-  struct TowerOfHanoi t;
-  TowerOfHanoi_init(&t, 4);
-  char *t_str = TowerOfHanoi_to_str(&t);
+  TowerOfHanoi *t = malloc(sizeof(TowerOfHanoi));
+  TowerOfHanoi_init(t, 4);
+  char *t_str = TowerOfHanoi_to_str(t);
   printf("%s", t_str);
   free(t_str);
 
-  TowerOfHanoi *t_copy = TowerOfHanoi_dup(&t);
-  t_str = TowerOfHanoi_to_str(&t);
+  TowerOfHanoi *t_copy = TowerOfHanoi_dup(t);
+  t_str = TowerOfHanoi_to_str(t);
   printf("%s", t_str);
   free(t_str);
+
+  TowerOfHanoi_destroy(t);
+  TowerOfHanoi_destroy(t_copy);
   free(t_copy);
 
-  TowerOfHanoi_init(&t, 5);
-  t_str = TowerOfHanoi_solution_to_str(&t);
+  TowerOfHanoi_init(t, 5);
+  t_str = TowerOfHanoi_solution_to_str(t);
   printf("%s", t_str);
   free(t_str);
 
-  TowerOfHanoi_solve(&t, TowerA, TowerC, TowerB);
-  t_str = TowerOfHanoi_solution_to_str(&t);
+  TowerOfHanoi_solve(t, TowerA, TowerC, TowerB);
+  t_str = TowerOfHanoi_solution_to_str(t);
   printf("%s", t_str);
   free(t_str);
+  TowerOfHanoi_solution_destroy(t);
 }
 
 int main(int argc, char *argv[]) {
