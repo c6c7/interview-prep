@@ -28,6 +28,9 @@ void Tower_add_disk(Tower *t, Disk d);
 int Tower_num_disks(Tower *t);
 
 void Tower_init(Tower *t, int num_disks, int capacity);
+void Tower_destroy(Tower *t);
+void TowerOfHanoi_destroy(TowerOfHanoi *toh);
+void TowerOfHanoi_solution_destroy(TowerOfHanoi *toh);
 Tower *Tower_dup(Tower *t);
 
 void TowerOfHanoi_init(TowerOfHanoi *t, int num_disks);

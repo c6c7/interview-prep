@@ -1,9 +1,12 @@
 #include "hanoi.h"
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cystring.h"
 #include "stack.h"
+
+#define UNUSED __attribute__((unused))
 
 int *Tower_to_array(Tower *t);
 
@@ -24,20 +27,60 @@ char *Tower_to_str(Tower *t) {
 }
 
 char *TowerOfHanoi_to_str(TowerOfHanoi *toh) {
-  return compose_str("%s\n%s\n%s\n", Tower_to_str(toh->towers[TowerA]),
-                     Tower_to_str(toh->towers[TowerB]),
-                     Tower_to_str(toh->towers[TowerC]));
+  char *str_a = Tower_to_str(toh->towers[TowerA]);
+  char *str_b = Tower_to_str(toh->towers[TowerB]);
+  char *str_c = Tower_to_str(toh->towers[TowerC]);
+  char *rtn_str = compose_str("%s\n%s\n%s\n", str_a, str_b, str_c);
+  free(str_a);
+  free(str_b);
+  free(str_c);
+  return rtn_str;
+}
+
+void *TowerOfHanoi_solution_walk(TowerOfHanoi *toh,
+                                 void *(*fn)(TowerOfHanoi *, void *)) {
+  void *rtn_ptr = NULL;
+  TowerOfHanoi *next_toh;
+  for (; toh != NULL; toh = next_toh) {
+    next_toh = toh->next_step;
+    rtn_ptr = fn(toh, rtn_ptr);
+  }
+  return rtn_ptr;
+}
+
+char *TowerOfHanoi_this_state_to_str(TowerOfHanoi *toh, char *last_str) {
+  if (last_str == NULL) {
+    last_str = strdup("");
+  }
+  char *str_state = TowerOfHanoi_to_str(toh);
+  char *str = compose_str("%s\n>>>>>\n\n%s", last_str, str_state);
+  free(str_state);
+  free(last_str);
+  return str;
 }
 
 char *TowerOfHanoi_solution_to_str(TowerOfHanoi *toh) {
-  char *str = strdup("");
-  char *prev_str;
-  for (; toh != NULL; toh = toh->next_step) {
-    prev_str = str;
-    str = compose_str("%s\n>>>>>\n\n%s", str, TowerOfHanoi_to_str(toh));
-    free(prev_str);
-  }
-  return str;
+  return TowerOfHanoi_solution_walk(
+      toh, (void *(*)(TowerOfHanoi *, void *))TowerOfHanoi_this_state_to_str);
+}
+
+void TowerOfHanoi_destroy(TowerOfHanoi *toh) {
+  Tower_destroy(toh->towers[TowerA]);
+  free(toh->towers[TowerA]);
+  Tower_destroy(toh->towers[TowerB]);
+  free(toh->towers[TowerB]);
+  Tower_destroy(toh->towers[TowerC]);
+  free(toh->towers[TowerC]);
+}
+
+void *TowerOfHanoi_destroy_wrapper(TowerOfHanoi *toh, UNUSED void *_) {
+  TowerOfHanoi_destroy(toh);
+  free(toh);
+  return NULL;
+}
+
+void TowerOfHanoi_solution_destroy(TowerOfHanoi *toh) {
+  TowerOfHanoi_solution_walk(toh, TowerOfHanoi_destroy_wrapper);
 }
 
 void Tower_add_disk(Tower *t, Disk d) {
@@ -62,6 +105,8 @@ void Tower_init(Tower *t, int num_disks, int capacity) {
     Tower_add_disk(t, (Disk){i});
   }
 }
+
+void Tower_destroy(Tower *t) { free(t->_space); }
 
 Tower *Tower_dup(Tower *t) {
   Tower *new_t = malloc(sizeof(Tower));
