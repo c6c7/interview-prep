@@ -73,14 +73,24 @@ void test_array_to_str() {
 
 void test_TowerOfHanoi() {
   struct TowerOfHanoi t;
-  t.tower_A = (int[]){1, 2, 3};
-  t.tower_A_size = 3;
-  t.tower_B = (int[]){4};
-  t.tower_B_size = 1;
-  t.tower_C = (int[]){};
-  t.tower_C_size = 0;
-
+  TowerOfHanoi_init(&t, 4);
   char *t_str = TowerOfHanoi_to_str(&t);
+  printf("%s", t_str);
+  free(t_str);
+
+  TowerOfHanoi *t_copy = TowerOfHanoi_dup(&t);
+  t_str = TowerOfHanoi_to_str(&t);
+  printf("%s", t_str);
+  free(t_str);
+  free(t_copy);
+
+  TowerOfHanoi_init(&t, 5);
+  t_str = TowerOfHanoi_solution_to_str(&t);
+  printf("%s", t_str);
+  free(t_str);
+
+  TowerOfHanoi_solve(&t, TowerA, TowerC, TowerB);
+  t_str = TowerOfHanoi_solution_to_str(&t);
   printf("%s", t_str);
   free(t_str);
 }
