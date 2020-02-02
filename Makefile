@@ -12,11 +12,27 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
+
+ifeq ($(origin CPPFLAGS), undefined)
+
+CPPFLAGS += -std=c17 # Use the the C17 Standard
+# From feature_test_macros(7):
+# (Since glibc 2.10) The value 200809L or
+# greater additionally exposes definitions
+# corresponding to the POSIX.1-2008 base
+# specification (excluding the XSI extension).
+CPPFLAGS += -D_POSIX_C_SOURCE=200809L
+
 # Uncomment to enable debugging
 CPPFLAGS += -g
 ## Uncomment to save intermediate files during compilation
 #CPPFLAGS += -save-temps
+
+CPPFLAGS += $(INC_FLAGS)
+CPPFLAGS += -MMD
+CPPFLAGS += -MP
+
+endif
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
